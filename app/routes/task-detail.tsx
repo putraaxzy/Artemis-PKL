@@ -367,7 +367,7 @@ export default function TaskDetail() {
 
                 {task.file_detail &&
                   (() => {
-                    const fileUrl = `http://localhost:8000/storage/${task.file_detail}`;
+                    const fileUrl = `http://engine.ptraazxtt.my.id:8000/storage/${task.file_detail}`;
                     const fileName =
                       task.file_detail.split("/").pop() || "file";
                     const fileExt =
