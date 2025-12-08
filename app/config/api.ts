@@ -6,7 +6,7 @@
 /**
  * API base URL configuration
  */
-export const API_BASE_URL = "http://engine.ptraazxtt.my.id:8000/api";
+export const API_BASE_URL = "https://engine.ptraazxtt.my.id/api";
 
 /**
  * API Endpoints
