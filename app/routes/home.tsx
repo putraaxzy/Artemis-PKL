@@ -1,13 +1,24 @@
-import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { tokenService } from "../services/api";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Tugas - Task Management System" },
+    { name: "description", content: "Manage your tasks efficiently" },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (tokenService.hasToken()) {
+      navigate("/tasks");
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  return null;
 }

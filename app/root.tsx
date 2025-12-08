@@ -24,6 +24,15 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // Suppress Chrome extension errors
+  if (typeof window !== 'undefined') {
+    window.addEventListener('unhandledrejection', (event) => {
+      if (event.reason?.message?.includes('Could not establish connection')) {
+        event.preventDefault();
+      }
+    });
+  }
+
   return (
     <html lang="en">
       <head>

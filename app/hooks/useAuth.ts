@@ -1,0 +1,56 @@
+/**
+ * useAuth Hook - Authentication state management
+ */
+
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { tokenService, userService, type User } from "../services/api";
+
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = tokenService.getToken();
+      const storedUser = userService.getUser();
+
+      if (token && storedUser) {
+        setUser(storedUser);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+
+      setIsLoading(false);
+    };
+
+    checkAuth();
+
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
+
+  const logout = () => {
+    tokenService.removeToken();
+    userService.clearUser();
+    setUser(null);
+    setIsAuthenticated(false);
+    navigate("/login");
+  };
+
+  return {
+    user,
+    isAuthenticated,
+    isLoading,
+    logout,
+    isGuru: userService.isGuru(),
+    isSiswa: userService.isSiswa(),
+  };
+}
