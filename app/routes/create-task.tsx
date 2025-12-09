@@ -80,17 +80,11 @@ export default function CreateTask() {
         if (siswaResponse.berhasil) {
           // siswaResponse.data sudah berisi array siswa
           setAllSiswa(siswaResponse.data || []);
-          console.log("Siswa loaded:", siswaResponse.data?.length || 0);
         }
 
         if (kelasResponse.berhasil) {
           // kelasResponse.data sudah berisi array kelas
           setAvailableKelas(kelasResponse.data || []);
-          console.log("Kelas tersedia dari backend:", kelasResponse.data);
-          console.log(
-            "Total kelas ditemukan:",
-            kelasResponse.data?.length || 0
-          );
         } else {
           console.warn("Gagal load kelas:", kelasResponse.pesan);
           setAvailableKelas([]);
@@ -330,8 +324,6 @@ export default function CreateTask() {
           .slice(0, 19)
           .replace("T", " ");
       }
-
-      console.log("Sending payload:", payload);
 
       const response = await taskService.createTask(payload);
 

@@ -19,12 +19,11 @@ export function Header() {
           <div className="flex justify-between items-center h-16 max-w-7xl mx-auto">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center shadow-sm transform group-hover:scale-105 transition-transform">
-                <span className="text-white font-bold text-xl">T</span>
-              </div>
-              <span className="font-bold text-gray-900 hidden sm:inline text-lg">
-                Tugas
-              </span>
+              <img
+                src="/logo.png"
+                alt="Artemis SMEA"
+                className="h-16 transform group-hover:scale-110 transition-transform"
+              />
             </Link>
 
             {/* Desktop Navigation */}

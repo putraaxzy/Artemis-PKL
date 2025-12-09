@@ -303,10 +303,6 @@ export const taskService = {
 
       formData.append("tampilkan_nilai", String(payload.tampilkan_nilai));
 
-      console.log(
-        "Sending FormData with id_target:",
-        JSON.stringify(payload.id_target)
-      );
       return apiCallFormData<Task>("/tugas", formData);
     }
 
@@ -331,7 +327,6 @@ export const taskService = {
       jsonPayload.tanggal_deadline = payload.tanggal_deadline;
     }
 
-    console.log("Sending JSON payload:", jsonPayload);
     return apiCall<Task>("/tugas", {
       method: "POST",
       body: JSON.stringify(jsonPayload),

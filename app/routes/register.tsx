@@ -164,9 +164,11 @@ export default function Register() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-2xl">T</span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Artemis SMEA" 
+            className="h-32"
+          />
         </div>
 
         {/* Form Container */}
