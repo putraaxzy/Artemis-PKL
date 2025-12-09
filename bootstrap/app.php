@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
+            'jwt.auth' => \App\Http\Middleware\SessionMiddleware::class,
             'role' => \App\Http\Middleware\CheckRole::class,
             'cors' => \App\Http\Middleware\CorsMiddleware::class,
             'bot.key' => \App\Http\Middleware\BotApiKeyMiddleware::class,
