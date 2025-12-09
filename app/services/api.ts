@@ -1,13 +1,4 @@
-/**
- * API Service - Centralized API handling for backend communication
- * Handles all HTTP requests, authentication, and error management
- */
-
 import { API_BASE_URL, API_ENDPOINTS } from "../config";
-
-// ============================================================================
-// tipe dan interface
-// ============================================================================
 
 export interface ApiResponse<T = any> {
   berhasil: boolean;
@@ -100,13 +91,6 @@ export interface KelasInfo {
   jumlah_siswa: number;
 }
 
-// ============================================================================
-// fungsi utility
-// ============================================================================
-
-/**
- * Get authorization header with token
- */
 function getAuthHeader(): HeadersInit {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -116,9 +100,6 @@ function getAuthHeader(): HeadersInit {
   };
 }
 
-/**
- * Get authorization header for FormData (without Content-Type)
- */
 function getFormDataAuthHeader(): HeadersInit {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -127,22 +108,34 @@ function getFormDataAuthHeader(): HeadersInit {
   };
 }
 
-/**
- * Handle API response and errors
- */
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
-  const data = await response.json();
+  let data: any;
+  try {
+    const responseText = await response.text();
+    if (responseText.trim().startsWith('{') || responseText.trim().startsWith('[')) {
+      data = JSON.parse(responseText);
+    } else {
+      throw new Error(`server returned non-json response: ${responseText.substring(0, 100)}`);
+    }
+  } catch (parseError) {
+    throw new Error('invalid response from server. session may have expired. please refresh and login again.');
+  }
 
   if (!response.ok) {
-    throw new Error(data.pesan || `HTTP Error: ${response.status}`);
+    if (response.status === 401 && data.kode === 'TOKEN_EXPIRED') {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.dispatchEvent(new CustomEvent('session-expired', { detail: data }));
+      }
+    }
+    
+    throw new Error(data.pesan || `http error: ${response.status}`);
   }
 
   return data;
 }
 
-/**
- * Generic fetch wrapper
- */
 async function apiCall<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -152,6 +145,7 @@ async function apiCall<T>(
 
   const response = await fetch(url, {
     ...options,
+    credentials: 'include',
     headers: {
       ...headers,
       ...options.headers,
@@ -161,9 +155,6 @@ async function apiCall<T>(
   return handleResponse<T>(response);
 }
 
-/**
- * FormData API call wrapper (for file uploads)
- */
 async function apiCallFormData<T>(
   endpoint: string,
   formData: FormData,
@@ -176,6 +167,7 @@ async function apiCallFormData<T>(
     ...options,
     method: "POST",
     body: formData,
+    credentials: 'include',
     headers,
   });
 

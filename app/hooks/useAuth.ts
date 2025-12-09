@@ -1,7 +1,3 @@
-/**
- * useAuth Hook - Authentication state management
- */
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { tokenService, userService, type User } from "../services/api";
@@ -32,10 +28,24 @@ export function useAuth() {
 
     window.addEventListener("storage", checkAuth);
 
+    const handleSessionExpired = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      
+      tokenService.removeToken();
+      userService.clearUser();
+      setUser(null);
+      setIsAuthenticated(false);
+      
+      navigate("/login?sessionExpired=true");
+    };
+
+    window.addEventListener("session-expired", handleSessionExpired);
+
     return () => {
       window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("session-expired", handleSessionExpired);
     };
-  }, []);
+  }, [navigate]);
 
   const logout = () => {
     tokenService.removeToken();

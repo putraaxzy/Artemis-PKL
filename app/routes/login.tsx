@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearch } from "react-router";
 import { authService, tokenService, userService } from "../services/api";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -7,8 +7,8 @@ import { Alert } from "../components/Alert";
 
 export function meta() {
   return [
-    { title: "Login - Tugas" },
-    { name: "description", content: "Login to Tugas Management System" },
+    { title: "login - tugas" },
+    { name: "description", content: "masuk ke sistem manajemen tugas" },
   ];
 }
 
@@ -18,6 +18,14 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const search = useSearch();
+
+  useEffect(() => {
+    const params = new URLSearchParams(search);
+    if (params.get("sessionExpired") === "true") {
+      setError("session anda telah berakhir. silakan login kembali.");
+    }
+  }, [search]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,13 +40,13 @@ export default function Login() {
         userService.setUser(response.data.pengguna);
         window.location.href = "/tasks";
       } else {
-        setError(response.pesan || "Login failed");
+        setError(response.pesan || "login gagal");
       }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred. Please try again."
+          : "terjadi kesalahan. silakan coba lagi."
       );
     } finally {
       setIsLoading(false);
@@ -48,21 +56,19 @@ export default function Login() {
   return (
     <main className="flex items-center justify-center min-h-screen bg-white px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <img 
             src="/logo.png" 
-            alt="Artemis SMEA" 
+            alt="artemis smea" 
             className="h-32"
           />
         </div>
 
-        {/* Form Container */}
         <div className="bg-white border border-gray-200 rounded-lg p-8 space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Selamat Datang</h1>
+            <h1 className="text-2xl font-bold text-gray-900">selamat datang</h1>
             <p className="text-gray-600 text-sm mt-1">
-              Masuk ke akun Anda untuk melanjutkan
+              masuk ke akun anda untuk melanjutkan
             </p>
           </div>
 
@@ -72,9 +78,9 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Username"
+              label="username"
               type="text"
-              placeholder="Masukkan username Anda"
+              placeholder="masukkan username anda"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -82,9 +88,9 @@ export default function Login() {
             />
 
             <Input
-              label="Password"
+              label="password"
               type="password"
-              placeholder="Masukkan password Anda"
+              placeholder="masukkan password anda"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -97,18 +103,18 @@ export default function Login() {
               className="w-full"
               size="md"
             >
-              Masuk
+              masuk
             </Button>
           </form>
 
           <div className="text-center text-sm text-gray-600">
-            Belum punya akun?{" "}
+            belum punya akun?{" "}
             <button
               type="button"
               onClick={() => navigate("/register")}
               className="text-gray-900 font-medium hover:underline"
             >
-              Daftar
+              daftar
             </button>
           </div>
         </div>
