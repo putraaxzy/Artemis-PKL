@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useSearch } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { authService, tokenService, userService } from "../services/api";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -18,14 +18,14 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const search = useSearch();
+  const location = useLocation();
 
   useEffect(() => {
-    const params = new URLSearchParams(search);
+    const params = new URLSearchParams(location.search);
     if (params.get("sessionExpired") === "true") {
       setError("session anda telah berakhir. silakan login kembali.");
     }
-  }, [search]);
+  }, [location.search]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
