@@ -111,7 +111,8 @@ class AuthController extends Controller
 
         $user = JWTAuth::user();
 
-        return response()->json([
+        // create response with jwt token
+        $response = response()->json([
             'berhasil' => true,
             'data' => [
                 'token' => $token,
@@ -129,6 +130,20 @@ class AuthController extends Controller
             ],
             'pesan' => 'Login berhasil'
         ]);
+
+        $cookie = cookie(
+            'auth_token', 
+            $token, 
+            60 * 24, 
+            '/', 
+            null, 
+            true, 
+            true, 
+            false, 
+            'Lax' 
+        );
+
+        return $response->cookie($cookie);
     }
 
     /**
@@ -136,12 +151,18 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
+        $token = JWTAuth::getToken();
+        if ($token) {
+            JWTAuth::invalidate($token);
+        }
+
+        // clear the auth token cookie
+        $cookie = cookie()->forget('auth_token');
 
         return response()->json([
             'berhasil' => true,
             'pesan' => 'Logout berhasil'
-        ]);
+        ])->withCookie($cookie);
     }
 
     /**
