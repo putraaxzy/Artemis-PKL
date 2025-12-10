@@ -684,9 +684,17 @@ export default function CreateTask() {
               {/* Student Selection */}
               {formData.target === "siswa" && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Pilih Siswa ({selectedStudents?.length ?? 0} dipilih)
-                  </label>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Pilih Siswa Individual
+                    </label>
+                    <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                      {selectedStudents?.length ?? 0} dipilih
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-3">
+                    ℹ️ Anda dapat memilih lebih dari satu siswa dengan mencentang beberapa siswa sekaligus
+                  </p>
 
                   {(allSiswa?.length ?? 0) === 0 ? (
                     <p className="text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
@@ -694,8 +702,8 @@ export default function CreateTask() {
                     </p>
                   ) : (
                     <>
-                      {/* Search Input */}
-                      <div className="mb-3">
+                      {/* Search Input and Action Buttons */}
+                      <div className="mb-3 space-y-2">
                         <input
                           type="text"
                           placeholder="Cari siswa berdasarkan nama, username, kelas, atau jurusan..."
@@ -703,14 +711,37 @@ export default function CreateTask() {
                           onChange={(e) =>
                             setStudentSearchQuery(e.target.value)
                           }
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-gray-900 placeholder-gray-500"
                         />
-                        {studentSearchQuery && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            Ditemukan {filteredSiswa.length} dari{" "}
-                            {allSiswa.length} siswa
-                          </p>
-                        )}
+                        <div className="flex items-center justify-between">
+                          {studentSearchQuery && (
+                            <p className="text-xs text-gray-500">
+                              Ditemukan {filteredSiswa.length} dari{" "}
+                              {allSiswa.length} siswa
+                            </p>
+                          )}
+                          <div className="flex gap-2 ml-auto">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const ids = filteredSiswa.map((s) => s.id);
+                                setSelectedStudents(ids);
+                              }}
+                              disabled={isLoading || filteredSiswa.length === 0}
+                              className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                            >
+                              ✅ Pilih Semua
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedStudents([])}
+                              disabled={isLoading || selectedStudents.length === 0}
+                              className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                            >
+                              ❌ Batal Semua
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">

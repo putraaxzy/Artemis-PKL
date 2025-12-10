@@ -897,7 +897,7 @@ export default function TaskDetail() {
                                     e.target.value as "selesai" | "ditolak"
                                   )
                                 }
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm text-gray-900"
                               >
                                 <option value="selesai">✅ Diterima</option>
                                 <option value="ditolak">❌ Ditolak</option>
@@ -935,7 +935,7 @@ export default function TaskDetail() {
                                 }
                                 placeholder="Berikan feedback untuk siswa..."
                                 rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm text-gray-900 placeholder-gray-400"
                               />
                             </div>
 
