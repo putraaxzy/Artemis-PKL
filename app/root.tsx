@@ -6,6 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { useEffect } from "react";
+import { InstallPrompt } from "./components/InstallPrompt";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -21,28 +23,50 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  { rel: "manifest", href: "/manifest.webmanifest" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  // Suppress Chrome extension errors
-  if (typeof window !== 'undefined') {
-    window.addEventListener('unhandledrejection', (event) => {
-      if (event.reason?.message?.includes('Could not establish connection')) {
-        event.preventDefault();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("unhandledrejection", (event) => {
+        if (event.reason?.message?.includes("Could not establish connection")) {
+          event.preventDefault();
+        }
+      });
+
+      if ("serviceWorker" in navigator && import.meta.env.PROD) {
+        import("virtual:pwa-register")
+          .then(({ registerSW }) => {
+            registerSW({
+              immediate: true,
+              onRegistered() {
+                console.log("sw registered");
+              },
+            });
+          })
+          .catch(() => {});
       }
-    });
-  }
+    }
+  }, []);
 
   return (
-    <html lang="en">
+    <html lang="id">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#111827" />
+        <meta
+          name="description"
+          content="sistem manajemen tugas untuk siswa dan guru"
+        />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <Meta />
         <Links />
       </head>
       <body>
         {children}
+        <InstallPrompt />
         <ScrollRestoration />
         <Scripts />
       </body>

@@ -1,0 +1,25 @@
+{
+  "name": "artemis - manajemen tugas",
+  "short_name": "artemis",
+  "description": "sistem manajemen tugas untuk siswa dan guru",
+  "theme_color": "#111827",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

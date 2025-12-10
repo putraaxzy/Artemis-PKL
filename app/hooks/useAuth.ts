@@ -30,12 +30,12 @@ export function useAuth() {
 
     const handleSessionExpired = (event: Event) => {
       const customEvent = event as CustomEvent;
-      
+
       tokenService.removeToken();
       userService.clearUser();
       setUser(null);
       setIsAuthenticated(false);
-      
+
       navigate("/login?sessionExpired=true");
     };
 

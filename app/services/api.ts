@@ -112,24 +112,33 @@ async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
   let data: any;
   try {
     const responseText = await response.text();
-    if (responseText.trim().startsWith('{') || responseText.trim().startsWith('[')) {
+    if (
+      responseText.trim().startsWith("{") ||
+      responseText.trim().startsWith("[")
+    ) {
       data = JSON.parse(responseText);
     } else {
-      throw new Error(`server returned non-json response: ${responseText.substring(0, 100)}`);
+      throw new Error(
+        `server returned non-json response: ${responseText.substring(0, 100)}`
+      );
     }
   } catch (parseError) {
-    throw new Error('invalid response from server. session may have expired. please refresh and login again.');
+    throw new Error(
+      "invalid response from server. session may have expired. please refresh and login again."
+    );
   }
 
   if (!response.ok) {
-    if (response.status === 401 && data.kode === 'TOKEN_EXPIRED') {
+    if (response.status === 401 && data.kode === "TOKEN_EXPIRED") {
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        window.dispatchEvent(new CustomEvent('session-expired', { detail: data }));
+        window.dispatchEvent(
+          new CustomEvent("session-expired", { detail: data })
+        );
       }
     }
-    
+
     throw new Error(data.pesan || `http error: ${response.status}`);
   }
 
@@ -145,7 +154,7 @@ async function apiCall<T>(
 
   const response = await fetch(url, {
     ...options,
-    credentials: 'include',
+    credentials: "include",
     headers: {
       ...headers,
       ...options.headers,
@@ -167,7 +176,7 @@ async function apiCallFormData<T>(
     ...options,
     method: "POST",
     body: formData,
-    credentials: 'include',
+    credentials: "include",
     headers,
   });
 

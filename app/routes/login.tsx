@@ -57,11 +57,7 @@ export default function Login() {
     <main className="flex items-center justify-center min-h-screen bg-white px-4">
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
-          <img 
-            src="/logo.png" 
-            alt="artemis smea" 
-            className="h-32"
-          />
+          <img src="/logo.png" alt="artemis smea" className="h-32" />
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-8 space-y-6">
