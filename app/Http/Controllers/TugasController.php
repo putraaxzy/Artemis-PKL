@@ -463,7 +463,7 @@ class TugasController extends Controller
             ]);
         } else {
             // siswa: only their own assignment
-            $tugas = Tugas::find($id);
+            $tugas = Tugas::with('guru:id,name')->find($id);
             
             if (!$tugas) {
                 return response()->json([
@@ -495,6 +495,8 @@ class TugasController extends Controller
                     'tanggal_mulai' => $tugas->tanggal_mulai,
                     'tanggal_deadline' => $tugas->tanggal_deadline,
                     'tampilkan_nilai' => $tugas->tampilkan_nilai,
+                    'total_siswa' => Penugasaan::where('id_tugas', $tugas->id)->count(),
+                    'guru' => $tugas->guru->name ?? null,
                     'dibuat_pada' => $tugas->created_at->toISOString(),
                     'penugasan' => [[
                         'id' => $penugasan->id,
