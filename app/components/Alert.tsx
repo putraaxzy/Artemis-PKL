@@ -1,7 +1,3 @@
-/**
- * Alert Component - Reusable alert/notification
- */
-
 import React from "react";
 
 interface AlertProps {
@@ -11,12 +7,7 @@ interface AlertProps {
   className?: string;
 }
 
-export function Alert({
-  type,
-  message,
-  onClose,
-  className = "",
-}: AlertProps) {
+export function Alert({ type, message, onClose, className = "" }: AlertProps) {
   const typeStyles = {
     success: "bg-green-50 border-green-200 text-green-800",
     error: "bg-red-50 border-red-200 text-red-800",
@@ -35,12 +26,6 @@ export function Alert({
     <div
       className={`border rounded-lg p-4 flex items-start gap-3 ${typeStyles[type]} ${className}`}
     >
-      <div className={`flex-shrink-0 text-lg ${iconStyles[type]}`}>
-        {type === "success" && "✓"}
-        {type === "error" && "✕"}
-        {type === "warning" && "⚠"}
-        {type === "info" && "ℹ"}
-      </div>
       <div className="flex-1">
         <p className="text-sm font-medium">{message}</p>
       </div>
@@ -48,6 +33,7 @@ export function Alert({
         <button
           onClick={onClose}
           className="flex-shrink-0 text-lg opacity-50 hover:opacity-100 transition-opacity"
+          aria-label="close"
         >
           ✕
         </button>

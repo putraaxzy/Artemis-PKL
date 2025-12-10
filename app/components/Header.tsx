@@ -6,6 +6,8 @@ import React from "react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "./Button";
 import { useAuth } from "../hooks/useAuth";
+import { MdTask, MdAdd, MdMenu, MdClose, MdLogout } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 
 export function Header() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -16,9 +18,12 @@ export function Header() {
     <>
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 max-w-7xl mx-auto">
+          <div className="flex justify-between items-center h-16 max-w-7xl mx-auto gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link
+              to="/"
+              className="flex items-center gap-2 group flex-shrink-0"
+            >
               <img
                 src="/logo.png"
                 alt="Artemis SMEA"
@@ -28,31 +33,34 @@ export function Header() {
 
             {/* Desktop Navigation */}
             {isAuthenticated && (
-              <nav className="hidden md:flex items-center gap-2">
+              <nav className="hidden md:flex items-center gap-2 flex-1 justify-center">
                 <Link
                   to="/tasks"
-                  className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all text-sm font-medium"
+                  className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all font-medium flex items-center gap-2"
                 >
-                  📋 Tasks
+                  <MdTask className="w-5 h-5" />
+                  <span>Tasks</span>
                 </Link>
                 {user?.role === "guru" && (
                   <Link
                     to="/create-task"
-                    className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all text-sm font-medium"
+                    className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all font-medium flex items-center gap-2"
                   >
-                    ➕ Create Task
+                    <MdAdd className="w-5 h-5" />
+                    <span>Create Task</span>
                   </Link>
                 )}
               </nav>
             )}
 
             {/* User Menu */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-shrink-0">
               {isAuthenticated && user ? (
                 <>
                   <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-900">
+                    <FaUser className="w-4 h-4 text-gray-600" />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm whitespace-nowrap">
                         {user.name}
                       </p>
                       <p className="text-xs text-gray-600 capitalize">
@@ -64,9 +72,10 @@ export function Header() {
                     variant="ghost"
                     size="sm"
                     onClick={logout}
-                    className="hidden md:inline-flex text-sm hover:bg-red-50 hover:text-red-600"
+                    className="hidden md:inline-flex hover:bg-red-50 hover:text-red-600 gap-2"
                   >
-                    Logout
+                    <MdLogout className="w-4 h-4" />
+                    <span>Logout</span>
                   </Button>
 
                   {/* Mobile Menu Button */}
@@ -74,28 +83,7 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    <svg
-                      className="w-6 h-6 text-gray-900"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      {mobileMenuOpen ? (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      ) : (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h16"
-                        />
-                      )}
-                    </svg>
+                    <MdMenu className="w-6 h-6 text-gray-900" />
                   </button>
                 </>
               ) : (
@@ -125,29 +113,25 @@ export function Header() {
           <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-2xl z-50 md:hidden animate-slide-in-left">
             <div className="p-6 space-y-6">
               {/* Close Button */}
+              {/* Close Button */}
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <svg
-                  className="w-6 h-6 text-gray-900"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <MdClose className="w-6 h-6 text-gray-900" />
               </button>
 
               {/* User Info */}
-              <div className="pb-4 border-b border-gray-200 pt-2">
-                <p className="text-lg font-bold text-gray-900">{user?.name}</p>
-                <p className="text-sm text-gray-600 capitalize">{user?.role}</p>
+              <div className="pb-4 border-b border-gray-200 pt-2 flex items-center gap-3">
+                <FaUser className="w-5 h-5 text-gray-600" />
+                <div>
+                  <p className="text-lg font-bold text-gray-900">
+                    {user?.name}
+                  </p>
+                  <p className="text-sm text-gray-600 capitalize">
+                    {user?.role}
+                  </p>
+                </div>
               </div>
 
               {/* Menu Items */}
@@ -157,7 +141,7 @@ export function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <span className="text-xl">📋</span>
+                  <MdTask className="w-5 h-5" />
                   <span className="font-medium">Tasks</span>
                 </Link>
                 {user?.role === "guru" && (
@@ -166,7 +150,7 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    <span className="text-xl">➕</span>
+                    <MdAdd className="w-5 h-5" />
                     <span className="font-medium">Create Task</span>
                   </Link>
                 )}
@@ -177,7 +161,7 @@ export function Header() {
                   }}
                   className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full text-left"
                 >
-                  <span className="text-xl">🚪</span>
+                  <MdLogout className="w-5 h-5" />
                   <span className="font-medium">Logout</span>
                 </button>
               </nav>

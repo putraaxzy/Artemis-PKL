@@ -312,14 +312,18 @@ export default function CreateTask() {
       }
 
       if (formData.tanggal_mulai) {
-        payload.tanggal_mulai = new Date(formData.tanggal_mulai)
+        const startDate = new Date(formData.tanggal_mulai);
+        startDate.setHours(0, 0, 0, 0);
+        payload.tanggal_mulai = startDate
           .toISOString()
           .slice(0, 19)
           .replace("T", " ");
       }
 
       if (formData.tanggal_deadline) {
-        payload.tanggal_deadline = new Date(formData.tanggal_deadline)
+        const endDate = new Date(formData.tanggal_deadline);
+        endDate.setHours(23, 59, 59, 999);
+        payload.tanggal_deadline = endDate
           .toISOString()
           .slice(0, 19)
           .replace("T", " ");
@@ -446,7 +450,7 @@ export default function CreateTask() {
                   onChange={handleChange}
                   disabled={isLoading}
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -579,68 +583,92 @@ export default function CreateTask() {
                     </p>
                   ) : (
                     <div className="border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
-                      <div className="grid gap-2">
-                        {options.kelas?.map((kelas) => (
-                          <div key={kelas}>
-                            <div className="font-medium text-gray-900 mb-2">
-                              {kelas}
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-4 mb-3">
-                              {options.jurusan?.map((jurusan) => {
-                                const kelasInfo = availableKelas?.find(
-                                  (k) =>
-                                    k.kelas?.toUpperCase() ===
-                                      kelas.toUpperCase() &&
-                                    k.jurusan?.toUpperCase() ===
-                                      jurusan.toUpperCase()
-                                );
-                                const studentCount =
-                                  kelasInfo?.jumlah_siswa || 0;
-                                const hasWarning = studentCount === 0;
+                      <div className="grid gap-4">
+                        {options.kelas?.map((kelas) => {
+                          const totalStudents = options.jurusan?.reduce(
+                            (sum, jurusan) => {
+                              const kelasInfo = availableKelas?.find(
+                                (k) =>
+                                  k.kelas?.toUpperCase() ===
+                                    kelas.toUpperCase() &&
+                                  k.jurusan?.toUpperCase() ===
+                                    jurusan.toUpperCase()
+                              );
+                              return sum + (kelasInfo?.jumlah_siswa || 0);
+                            },
+                            0
+                          );
 
-                                return (
-                                  <label
-                                    key={`${kelas}-${jurusan}`}
-                                    className="flex items-center gap-2 p-2 rounded transition-colors cursor-pointer hover:bg-gray-50"
-                                    title={
-                                      hasWarning
-                                        ? "Peringatan: Tidak ada siswa di kelas ini"
-                                        : `${studentCount} siswa`
-                                    }
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      checked={isClassSelected(kelas, jurusan)}
-                                      onChange={() =>
-                                        handleToggleClass(kelas, jurusan)
+                          return (
+                            <div key={kelas}>
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="font-medium text-gray-900 text-base">
+                                  {kelas}
+                                </div>
+                                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                  Total: {totalStudents} siswa
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 ml-4 mb-3">
+                                {options.jurusan?.map((jurusan) => {
+                                  const kelasInfo = availableKelas?.find(
+                                    (k) =>
+                                      k.kelas?.toUpperCase() ===
+                                        kelas.toUpperCase() &&
+                                      k.jurusan?.toUpperCase() ===
+                                        jurusan.toUpperCase()
+                                  );
+                                  const studentCount =
+                                    kelasInfo?.jumlah_siswa || 0;
+                                  const hasWarning = studentCount === 0;
+
+                                  return (
+                                    <label
+                                      key={`${kelas}-${jurusan}`}
+                                      className="flex items-center gap-2 p-3 rounded-lg transition-colors cursor-pointer hover:bg-gray-50 border border-gray-100"
+                                      title={
+                                        hasWarning
+                                          ? "Peringatan: Tidak ada siswa di kelas ini"
+                                          : `${studentCount} siswa`
                                       }
-                                      disabled={isLoading}
-                                      className="w-4 h-4 text-gray-900 rounded focus:ring-2 focus:ring-gray-900"
-                                    />
-                                    <span
-                                      className={`text-sm flex-1 ${
-                                        hasWarning
-                                          ? "text-orange-600"
-                                          : "text-gray-700"
-                                      }`}
                                     >
-                                      {jurusan}
-                                    </span>
-                                    <span
-                                      className={`text-xs ${
-                                        hasWarning
-                                          ? "text-orange-500"
-                                          : "text-gray-500"
-                                      }`}
-                                    >
-                                      ({studentCount} siswa)
-                                    </span>
-                                  </label>
-                                );
-                              })}
+                                      <input
+                                        type="checkbox"
+                                        checked={isClassSelected(
+                                          kelas,
+                                          jurusan
+                                        )}
+                                        onChange={() =>
+                                          handleToggleClass(kelas, jurusan)
+                                        }
+                                        disabled={isLoading}
+                                        className="w-4 h-4 text-gray-900 rounded focus:ring-2 focus:ring-gray-900"
+                                      />
+                                      <span
+                                        className={`flex-1 font-medium ${
+                                          hasWarning
+                                            ? "text-orange-600"
+                                            : "text-gray-700"
+                                        }`}
+                                      >
+                                        {jurusan}
+                                      </span>
+                                      <span
+                                        className={`text-xs whitespace-nowrap ${
+                                          hasWarning
+                                            ? "text-orange-500"
+                                            : "text-gray-500"
+                                        }`}
+                                      >
+                                        ({studentCount})
+                                      </span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                       {(selectedClasses?.length ?? 0) === 0 && (
                         <p className="text-sm text-gray-500 text-center py-4">
@@ -780,12 +808,12 @@ export default function CreateTask() {
                     Tanggal Mulai (Opsional)
                   </label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     name="tanggal_mulai"
                     value={formData.tanggal_mulai}
                     onChange={handleChange}
                     disabled={isLoading}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none disabled:bg-gray-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
@@ -793,12 +821,12 @@ export default function CreateTask() {
                     Deadline (Opsional)
                   </label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     name="tanggal_deadline"
                     value={formData.tanggal_deadline}
                     onChange={handleChange}
                     disabled={isLoading}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none disabled:bg-gray-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>

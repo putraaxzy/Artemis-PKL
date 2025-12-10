@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { taskService, type Task } from "../services";
 import { useAuth } from "../hooks";
 import { Header, Card, Alert, Button } from "../components";
+import { MdTask, MdLink, MdFilePresent } from "react-icons/md";
 
 export function meta() {
   return [
@@ -154,8 +155,8 @@ export default function Tasks() {
 
           {/* Empty State */}
           {!isLoading && tasks.length === 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 text-center py-12">
-              <div className="text-gray-400 text-4xl mb-4">📋</div>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 text-center py-12 flex flex-col items-center">
+              <MdTask className="text-gray-400 text-6xl mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 Belum ada tugas
               </h3>
@@ -228,10 +229,18 @@ export default function Tasks() {
                           </div>
                           <div className="flex justify-between">
                             <span>Tipe:</span>
-                            <span className="font-semibold text-gray-900 capitalize">
-                              {task.tipe_pengumpulan === "link"
-                                ? "📱 Online"
-                                : "📄 Langsung"}
+                            <span className="font-semibold text-gray-900 capitalize flex items-center gap-1">
+                              {task.tipe_pengumpulan === "link" ? (
+                                <>
+                                  <MdLink className="w-4 h-4" />
+                                  Online
+                                </>
+                              ) : (
+                                <>
+                                  <MdFilePresent className="w-4 h-4" />
+                                  Langsung
+                                </>
+                              )}
                             </span>
                           </div>
                         </>
