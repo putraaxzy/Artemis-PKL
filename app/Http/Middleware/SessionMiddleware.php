@@ -27,11 +27,9 @@ class SessionMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Try to get token from Authorization header first
         $authHeader = $request->header('Authorization');
         
         if (!$authHeader && $request->hasCookie('auth_token')) {
-            // If no Authorization header, try to get token from cookie
             $token = $request->cookie('auth_token');
             $request->headers->set('Authorization', 'Bearer ' . $token);
         }
