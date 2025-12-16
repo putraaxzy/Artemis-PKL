@@ -391,10 +391,7 @@ export const taskService = {
     taskId: number,
     payload: FormData
   ): Promise<ApiResponse<Task>> {
-    return apiCallFormData<Task>(`/tugas/${taskId}`, {
-      method: "POST", // laravel pakai POST dengan _method=PUT untuk FormData
-      body: payload,
-    });
+    return apiCallFormData<Task>(`/tugas/${taskId}`, payload);
   },
 
   /**
