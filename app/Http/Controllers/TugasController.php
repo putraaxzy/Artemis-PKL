@@ -853,18 +853,54 @@ class TugasController extends Controller
 
         $tugas->save();
 
-        // Update penugasaan if target changed
         if ($shouldUpdateAssignments) {
-            // Delete existing penugasaan
-            Penugasaan::where('id_tugas', $id)->delete();
+            $oldTargetType = $tugas->target;
+            $newTargetType = $request->target ?? $oldTargetType;
 
-            // Create new penugasaan
-            foreach ($siswaIds as $siswaId) {
-                Penugasaan::create([
-                    'id_tugas' => $tugas->id,
-                    'id_siswa' => $siswaId,
-                    'status' => 'pending',
-                ]);
+            $oldIdTarget = $tugas->id_target;
+            $newIdTarget = $request->has('id_target') ? $request->id_target : $oldIdTarget;
+            if (is_string($newIdTarget))
+                $newIdTarget = json_decode($newIdTarget, true);
+            if (is_string($oldIdTarget))
+                $oldIdTarget = json_decode($oldIdTarget, true);
+
+            $targetChanged = ($oldTargetType !== $newTargetType);
+
+            if (!$targetChanged) {
+                $sortedOld = $oldIdTarget;
+                $sortedNew = $newIdTarget;
+
+                if (is_array($sortedOld) && is_array($sortedNew)) {
+                    if ($newTargetType === 'kelas') {
+                        usort($sortedOld, function ($a, $b) {
+                            return strcmp(($a['kelas'] ?? '') . ($a['jurusan'] ?? ''), ($b['kelas'] ?? '') . ($b['jurusan'] ?? ''));
+                        });
+                        usort($sortedNew, function ($a, $b) {
+                            return strcmp(($a['kelas'] ?? '') . ($a['jurusan'] ?? ''), ($b['kelas'] ?? '') . ($b['jurusan'] ?? ''));
+                        });
+                    } else {
+                        sort($sortedOld);
+                        sort($sortedNew);
+                    }
+
+                    if ($sortedOld !== $sortedNew) {
+                        $targetChanged = true;
+                    }
+                } else {
+                    $targetChanged = true;
+                }
+            }
+
+            if ($targetChanged) {
+                Penugasaan::where('id_tugas', $id)->delete();
+
+                foreach ($siswaIds as $siswaId) {
+                    Penugasaan::create([
+                        'id_tugas' => $tugas->id,
+                        'id_siswa' => $siswaId,
+                        'status' => 'pending',
+                    ]);
+                }
             }
         }
 
