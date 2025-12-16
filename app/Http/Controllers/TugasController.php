@@ -94,7 +94,7 @@ class TugasController extends Controller
         } else {
             // target kelas: ambil semua siswa dari kelas yang dipilih
             \Log::info('Processing kelas target', ['id_target' => $request->id_target]);
-            
+
             $debugInfo = [];
             foreach ($request->id_target as $kelasInfo) {
                 if (!isset($kelasInfo['kelas']) || !isset($kelasInfo['jurusan'])) {
@@ -103,33 +103,33 @@ class TugasController extends Controller
                         'pesan' => 'Format target kelas harus berisi kelas dan jurusan'
                     ], 400);
                 }
-                
+
                 // trim dan uppercase untuk normalisasi
                 $kelas = trim(strtoupper($kelasInfo['kelas']));
                 $jurusan = trim(strtoupper($kelasInfo['jurusan']));
-                
+
                 \Log::info('Searching for siswa', ['kelas' => $kelas, 'jurusan' => $jurusan]);
-                
+
                 // simple case-insensitive match
                 $siswaKelas = User::where('role', 'siswa')
                     ->whereRaw('UPPER(TRIM(kelas)) = ?', [$kelas])
                     ->whereRaw('UPPER(TRIM(jurusan)) = ?', [$jurusan])
                     ->pluck('id')
                     ->toArray();
-                
+
                 \Log::info('Found siswa', ['count' => count($siswaKelas), 'ids' => $siswaKelas]);
-                
+
                 $debugInfo[] = [
                     'kelas_dicari' => $kelas,
                     'jurusan_dicari' => $jurusan,
                     'siswa_ditemukan' => count($siswaKelas),
                     'siswa_ids' => $siswaKelas
                 ];
-                
+
                 $siswaIds = array_merge($siswaIds, $siswaKelas);
             }
             $siswaIds = array_unique($siswaIds);
-            
+
             \Log::info('Total unique siswa found', ['count' => count($siswaIds), 'ids' => $siswaIds]);
         }
 
@@ -147,7 +147,7 @@ class TugasController extends Controller
                     'kelas_upper' => strtoupper(trim($u->kelas ?? '')),
                     'jurusan_upper' => strtoupper(trim($u->jurusan ?? ''))
                 ]);
-            
+
             return response()->json([
                 'berhasil' => false,
                 'pesan' => 'Tidak ada siswa ditemukan untuk target yang dipilih. Pastikan kelas dan jurusan sesuai dengan data siswa yang terdaftar.',
@@ -221,19 +221,22 @@ class TugasController extends Controller
                 ->latest()
                 ->get();
         } else {
-            $tugas = Tugas::whereHas('penugasan', function($query) use ($user) {
+            $tugas = Tugas::whereHas('penugasan', function ($query) use ($user) {
                 $query->where('id_siswa', $user->id);
             })
-            ->with(['guru:id,name', 'penugasan' => function($query) use ($user) {
-                $query->where('id_siswa', $user->id);
-            }])
-            ->latest()
-            ->get();
+                ->with([
+                    'guru:id,name',
+                    'penugasan' => function ($query) use ($user) {
+                        $query->where('id_siswa', $user->id);
+                    }
+                ])
+                ->latest()
+                ->get();
         }
 
         return response()->json([
             'berhasil' => true,
-            'data' => $tugas->map(function($t) use ($user) {
+            'data' => $tugas->map(function ($t) use ($user) {
                 $data = [
                     'id' => $t->id,
                     'judul' => $t->judul,
@@ -252,7 +255,7 @@ class TugasController extends Controller
                     $penugasan = $t->penugasan->first();
                     $data['guru'] = $t->guru->name;
                     $data['status'] = $penugasan->status ?? 'pending';
-                    
+
                     // siswa hanya bisa lihat nilai jika guru aktifkan fitur tampilkan_nilai
                     if ($t->tampilkan_nilai && $penugasan) {
                         $data['nilai'] = $penugasan->nilai;
@@ -302,7 +305,7 @@ class TugasController extends Controller
 
         // validasi berdasarkan tipe pengumpulan
         $tipePengumpulan = $penugasan->tugas->tipe_pengumpulan;
-        
+
         if ($tipePengumpulan === 'link') {
             $validator = Validator::make($request->all(), [
                 'link_drive' => 'required|url'
@@ -437,7 +440,7 @@ class TugasController extends Controller
                         'selesai' => $tugas->penugasan->where('status', 'selesai')->count(),
                         'ditolak' => $tugas->penugasan->where('status', 'ditolak')->count(),
                     ],
-                    'penugasan' => $tugas->penugasan->map(function($p) use ($tugas) {
+                    'penugasan' => $tugas->penugasan->map(function ($p) use ($tugas) {
                         $data = [
                             'id' => $p->id,
                             'siswa' => [
@@ -464,7 +467,7 @@ class TugasController extends Controller
         } else {
             // siswa: only their own assignment
             $tugas = Tugas::with('guru:id,name')->find($id);
-            
+
             if (!$tugas) {
                 return response()->json([
                     'berhasil' => false,
@@ -498,14 +501,16 @@ class TugasController extends Controller
                     'total_siswa' => Penugasaan::where('id_tugas', $tugas->id)->count(),
                     'guru' => $tugas->guru->name ?? null,
                     'dibuat_pada' => $tugas->created_at->toISOString(),
-                    'penugasan' => [[
-                        'id' => $penugasan->id,
-                        'status' => $penugasan->status,
-                        'link_drive' => $penugasan->link_drive,
-                        'tanggal_pengumpulan' => $penugasan->tanggal_pengumpulan,
-                        'nilai' => $penugasan->nilai,
-                        'catatan_guru' => $penugasan->catatan_guru,
-                    ]]
+                    'penugasan' => [
+                        [
+                            'id' => $penugasan->id,
+                            'status' => $penugasan->status,
+                            'link_drive' => $penugasan->link_drive,
+                            'tanggal_pengumpulan' => $penugasan->tanggal_pengumpulan,
+                            'nilai' => $penugasan->nilai,
+                            'catatan_guru' => $penugasan->catatan_guru,
+                        ]
+                    ]
                 ],
                 'pesan' => 'Detail tugas berhasil diambil'
             ]);
@@ -607,7 +612,7 @@ class TugasController extends Controller
             $kelasKey = strtoupper(trim($siswa->kelas));
             $jurusanKey = strtoupper(trim($siswa->jurusan));
             $key = $kelasKey . '|' . $jurusanKey;
-            
+
             if (!isset($grouped[$key])) {
                 $grouped[$key] = [
                     'kelas' => $kelasKey,
@@ -620,7 +625,7 @@ class TugasController extends Controller
 
         // convert to array dan sort
         $kelas = array_values($grouped);
-        usort($kelas, function($a, $b) {
+        usort($kelas, function ($a, $b) {
             if ($a['kelas'] === $b['kelas']) {
                 return strcmp($a['jurusan'], $b['jurusan']);
             }
@@ -723,36 +728,110 @@ class TugasController extends Controller
             }
         }
 
-        // validation
-        $validator = Validator::make($request->all(), [
+        // Dynamic validation rules based on target type
+        $rules = [
             'judul' => 'sometimes|string|max:255',
             'deskripsi' => 'nullable|string',
             'file_detail' => 'nullable|file|max:102400',
             'hapus_file' => 'nullable|boolean',
             'target' => 'sometimes|in:kelas,siswa',
-            'id_target' => 'nullable|array',
             'tipe_pengumpulan' => 'sometimes|in:link,langsung',
             'tanggal_mulai' => 'nullable|date',
             'tanggal_deadline' => 'nullable|date',
             'tampilkan_nilai' => 'nullable|boolean',
-        ]);
+        ];
+
+        // Determine target type (use new or existing)
+        $targetType = $request->has('target') ? $request->target : $tugas->target;
+
+        // If id_target is provided, validate it based on target type
+        if ($request->has('id_target')) {
+            if ($targetType === 'kelas') {
+                $rules['id_target'] = 'required|array';
+                $rules['id_target.*.kelas'] = 'required|string';
+                $rules['id_target.*.jurusan'] = 'required|string';
+            } else {
+                $rules['id_target'] = 'required|array';
+                $rules['id_target.*'] = 'required|integer';
+            }
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json([
                 'berhasil' => false,
-                'pesan' => $validator->errors()->first()
+                'pesan' => $validator->errors()->first(),
+                'errors' => $validator->errors()
             ], 400);
         }
 
+        // Logic for target change or update
+        $shouldUpdateAssignments = false;
+        $siswaIds = [];
+
+        // Check if we need to update assignments
+        if ($request->has('target') || $request->has('id_target')) {
+            $shouldUpdateAssignments = true;
+
+            $newIdTarget = $request->has('id_target') ? $request->id_target : $tugas->id_target;
+            // Decode if it's still a json string in $tugas->id_target when not updated in request (unlikely given cast but safe)
+            if (is_string($newIdTarget))
+                $newIdTarget = json_decode($newIdTarget, true);
+
+            if ($targetType === 'siswa') {
+                // Validate siswa IDs
+                $siswaIds = $newIdTarget;
+                $siswaCount = User::whereIn('id', $siswaIds)->where('role', 'siswa')->count();
+                if ($siswaCount !== count($siswaIds)) {
+                    return response()->json([
+                        'berhasil' => false,
+                        'pesan' => 'Beberapa ID siswa tidak valid'
+                    ], 400);
+                }
+            } else {
+                // Target kelas
+                foreach ($newIdTarget as $kelasInfo) {
+                    $kelas = trim(strtoupper($kelasInfo['kelas']));
+                    $jurusan = trim(strtoupper($kelasInfo['jurusan']));
+
+                    $siswaKelas = User::where('role', 'siswa')
+                        ->whereRaw('UPPER(TRIM(kelas)) = ?', [$kelas])
+                        ->whereRaw('UPPER(TRIM(jurusan)) = ?', [$jurusan])
+                        ->pluck('id')
+                        ->toArray();
+
+                    $siswaIds = array_merge($siswaIds, $siswaKelas);
+                }
+                $siswaIds = array_unique($siswaIds);
+            }
+
+            if (empty($siswaIds)) {
+                return response()->json([
+                    'berhasil' => false,
+                    'pesan' => 'Tidak ada siswa ditemukan untuk target yang dipilih.'
+                ], 400);
+            }
+        }
+
+
         // update tugas
-        if ($request->has('judul')) $tugas->judul = $request->judul;
-        if ($request->has('deskripsi')) $tugas->deskripsi = $request->deskripsi;
-        if ($request->has('target')) $tugas->target = $request->target;
-        if ($request->has('id_target')) $tugas->id_target = json_encode($request->id_target);
-        if ($request->has('tipe_pengumpulan')) $tugas->tipe_pengumpulan = $request->tipe_pengumpulan;
-        if ($request->has('tanggal_mulai')) $tugas->tanggal_mulai = $request->tanggal_mulai;
-        if ($request->has('tanggal_deadline')) $tugas->tanggal_deadline = $request->tanggal_deadline;
-        if ($request->has('tampilkan_nilai')) $tugas->tampilkan_nilai = $request->tampilkan_nilai;
+        if ($request->has('judul'))
+            $tugas->judul = $request->judul;
+        if ($request->has('deskripsi'))
+            $tugas->deskripsi = $request->deskripsi;
+        if ($request->has('target'))
+            $tugas->target = $request->target;
+        if ($request->has('id_target'))
+            $tugas->id_target = $request->id_target; // Cast handling will take care of array
+        if ($request->has('tipe_pengumpulan'))
+            $tugas->tipe_pengumpulan = $request->tipe_pengumpulan;
+        if ($request->has('tanggal_mulai'))
+            $tugas->tanggal_mulai = $request->tanggal_mulai;
+        if ($request->has('tanggal_deadline'))
+            $tugas->tanggal_deadline = $request->tanggal_deadline;
+        if ($request->has('tampilkan_nilai'))
+            $tugas->tampilkan_nilai = $request->tampilkan_nilai;
 
         // handle file deletion
         if ($request->input('hapus_file') === true || $request->input('hapus_file') === 'true') {
@@ -775,28 +854,11 @@ class TugasController extends Controller
         $tugas->save();
 
         // Update penugasaan if target changed
-        if ($request->has('target') && $request->has('id_target')) {
+        if ($shouldUpdateAssignments) {
             // Delete existing penugasaan
             Penugasaan::where('id_tugas', $id)->delete();
 
-            // Create new penugasaan based on updated target
-            $idTarget = $request->id_target;
-            $siswaIds = [];
-
-            if ($request->target === 'kelas') {
-                foreach ($idTarget as $kelasData) {
-                    $siswa = User::where('role', 'siswa')
-                        ->where('kelas', $kelasData['kelas'])
-                        ->where('jurusan', $kelasData['jurusan'])
-                        ->get();
-                    foreach ($siswa as $s) {
-                        $siswaIds[] = $s->id;
-                    }
-                }
-            } else {
-                $siswaIds = $idTarget;
-            }
-
+            // Create new penugasaan
             foreach ($siswaIds as $siswaId) {
                 Penugasaan::create([
                     'id_tugas' => $tugas->id,
