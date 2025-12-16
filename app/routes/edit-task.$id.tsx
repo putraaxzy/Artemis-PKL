@@ -289,10 +289,8 @@ export default function EditTask() {
           }))
           : selectedStudents;
 
-      const payload = new FormData();
 
-      // Method spoofing for Laravel (POST request treated as PUT)
-      payload.append("_method", "PUT");
+      const payload = new FormData();
 
       payload.append("judul", formData.judul);
       if (formData.deskripsi.trim()) {
