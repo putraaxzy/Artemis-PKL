@@ -284,54 +284,48 @@ export default function EditTask() {
       const normalizedIdTarget =
         formData.target === "kelas"
           ? selectedClasses.map((c) => ({
-              kelas: c.kelas.toUpperCase().trim(),
-              jurusan: c.jurusan.toUpperCase().trim(),
-            }))
+            kelas: c.kelas.toUpperCase().trim(),
+            jurusan: c.jurusan.toUpperCase().trim(),
+          }))
           : selectedStudents;
 
-      const payload: any = {
-        judul: formData.judul,
-        target: formData.target,
-        id_target: normalizedIdTarget,
-        tipe_pengumpulan: formData.tipe_pengumpulan,
-        tampilkan_nilai: formData.tampilkan_nilai,
-      };
+      const payload = new FormData();
 
+      // Method spoofing for Laravel (POST request treated as PUT)
+      payload.append("_method", "PUT");
+
+      payload.append("judul", formData.judul);
       if (formData.deskripsi.trim()) {
-        payload.deskripsi = formData.deskripsi;
+        payload.append("deskripsi", formData.deskripsi);
       }
-
-      if (file) {
-        payload.file_detail = file;
-      } else if (removeExistingFile) {
-        payload.hapus_file = true;
-      }
+      payload.append("target", formData.target);
+      payload.append("id_target", JSON.stringify(normalizedIdTarget));
+      payload.append("tipe_pengumpulan", formData.tipe_pengumpulan);
+      payload.append("tampilkan_nilai", String(formData.tampilkan_nilai));
 
       if (formData.tanggal_mulai) {
         const startDate = new Date(formData.tanggal_mulai);
         startDate.setHours(0, 0, 0, 0);
-        payload.tanggal_mulai = startDate
-          .toISOString()
-          .slice(0, 19)
-          .replace("T", " ");
+        const startDateStr = startDate.toISOString().slice(0, 19).replace("T", " ");
+        payload.append("tanggal_mulai", startDateStr);
       }
 
       if (formData.tanggal_deadline) {
         const endDate = new Date(formData.tanggal_deadline);
         endDate.setHours(23, 59, 59, 999);
-        payload.tanggal_deadline = endDate
-          .toISOString()
-          .slice(0, 19)
-          .replace("T", " ");
+        const endDateStr = endDate.toISOString().slice(0, 19).replace("T", " ");
+        payload.append("tanggal_deadline", endDateStr);
       }
 
-      const response = await taskService.updateTask(Number(id), payload);
-
-      if (response.berhasil) {
-        navigate("/tasks");
-      } else {
-        setError(response.pesan || "Gagal mengupdate tugas");
+      if (file) {
+        payload.append("file_detail", file);
+      } else if (removeExistingFile) {
+        payload.append("hapus_file", "true");
       }
+
+      await taskService.updateTask(Number(id), payload);
+
+      navigate("/tasks");
     } catch (err: any) {
       console.error("Error updating task:", err);
 
@@ -586,9 +580,9 @@ export default function EditTask() {
                               const kelasInfo = availableKelas?.find(
                                 (k) =>
                                   k.kelas?.toUpperCase() ===
-                                    kelas.toUpperCase() &&
+                                  kelas.toUpperCase() &&
                                   k.jurusan?.toUpperCase() ===
-                                    jurusan.toUpperCase()
+                                  jurusan.toUpperCase()
                               );
                               return sum + (kelasInfo?.jumlah_siswa || 0);
                             },
@@ -610,9 +604,9 @@ export default function EditTask() {
                                   const kelasInfo = availableKelas?.find(
                                     (k) =>
                                       k.kelas?.toUpperCase() ===
-                                        kelas.toUpperCase() &&
+                                      kelas.toUpperCase() &&
                                       k.jurusan?.toUpperCase() ===
-                                        jurusan.toUpperCase()
+                                      jurusan.toUpperCase()
                                   );
                                   const studentCount =
                                     kelasInfo?.jumlah_siswa || 0;
