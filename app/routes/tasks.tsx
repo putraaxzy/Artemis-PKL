@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { taskService, type Task } from "../services";
 import { useAuth } from "../hooks";
 import { Header, Card, Alert, Button } from "../components";
-import { MdTask, MdLink, MdFilePresent } from "react-icons/md";
+import { MdTask, MdLink, MdFilePresent, MdEdit, MdDelete, MdWarning } from "react-icons/md";
 
 export function meta() {
   return [
@@ -249,7 +249,7 @@ export default function Tasks() {
 
                     {/* Date */}
                     <p className="text-xs text-gray-500 pt-2 border-t border-gray-200">
-                      📅{" "}
+                      Dibuat Pada: {" "}
                       {new Date(task.dibuat_pada).toLocaleDateString("id-ID", {
                         year: "numeric",
                         month: "short",
@@ -266,18 +266,18 @@ export default function Tasks() {
                           e.stopPropagation();
                           navigate(`/edit-task/${task.id}`);
                         }}
-                        className="flex-1 px-4 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-xl transition-colors border border-blue-200"
+                        className="flex-1 px-4 py-2.5 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-xl transition-colors border border-blue-200 flex items-center justify-center gap-2"
                       >
-                        ✏️ Edit
+                        <MdEdit /> Edit
                       </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setDeleteId(task.id);
                         }}
-                        className="flex-1 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors border border-red-200"
+                        className="flex-1 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors border border-red-200 flex items-center justify-center gap-2"
                       >
-                        🗑️ Hapus
+                        <MdDelete /> Hapus
                       </button>
                     </div>
                   )}
@@ -293,7 +293,9 @@ export default function Tasks() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 animate-slide-in-left">
             <div className="text-center">
-              <div className="text-5xl mb-4">⚠️</div>
+              <div className="flex justify-center mb-4">
+                <MdWarning className="text-5xl text-yellow-500" />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 Hapus Tugas?
               </h3>

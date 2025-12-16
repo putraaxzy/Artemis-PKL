@@ -13,6 +13,7 @@ import { Card } from "../components/Card";
 import { Alert } from "../components/Alert";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
+import { MdAttachFile, MdInfo, MdCheck, MdClose } from "react-icons/md";
 
 export function meta() {
   return [
@@ -429,8 +430,8 @@ export default function EditTask() {
                   <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          📎 File saat ini
+                        <p className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                          <MdAttachFile className="w-4 h-4" /> File saat ini
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
                           {existingFile.split("/").pop()}
@@ -655,8 +656,8 @@ export default function EditTask() {
                       {selectedStudents?.length ?? 0} dipilih
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mb-3">
-                    ℹ️ Anda dapat memilih lebih dari satu siswa dengan mencentang beberapa siswa sekaligus
+                  <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+                    <MdInfo className="w-4 h-4" /> Anda dapat memilih lebih dari satu siswa dengan mencentang beberapa siswa sekaligus
                   </p>
 
                   {(allSiswa?.length ?? 0) === 0 ? (
@@ -691,17 +692,17 @@ export default function EditTask() {
                                 setSelectedStudents(ids);
                               }}
                               disabled={isLoading || filteredSiswa.length === 0}
-                              className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                              className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-1"
                             >
-                              ✅ Pilih Semua
+                              <MdCheck className="w-3 h-3" /> Pilih Semua
                             </button>
                             <button
                               type="button"
                               onClick={() => setSelectedStudents([])}
                               disabled={isLoading || selectedStudents.length === 0}
-                              className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                              className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-1"
                             >
-                              ❌ Batal Semua
+                              <MdClose className="w-3 h-3" /> Batal Semua
                             </button>
                           </div>
                         </div>

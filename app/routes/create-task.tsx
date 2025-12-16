@@ -13,6 +13,7 @@ import { Card } from "../components/Card";
 import { Alert } from "../components/Alert";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
+import { MdInfo, MdCheck, MdClose } from "react-icons/md";
 
 export function meta() {
   return [
@@ -289,9 +290,9 @@ export default function CreateTask() {
       const normalizedIdTarget =
         formData.target === "kelas"
           ? selectedClasses.map((c) => ({
-              kelas: c.kelas.toUpperCase().trim(),
-              jurusan: c.jurusan.toUpperCase().trim(),
-            }))
+            kelas: c.kelas.toUpperCase().trim(),
+            jurusan: c.jurusan.toUpperCase().trim(),
+          }))
           : selectedStudents;
 
       const payload: any = {
@@ -590,9 +591,9 @@ export default function CreateTask() {
                               const kelasInfo = availableKelas?.find(
                                 (k) =>
                                   k.kelas?.toUpperCase() ===
-                                    kelas.toUpperCase() &&
+                                  kelas.toUpperCase() &&
                                   k.jurusan?.toUpperCase() ===
-                                    jurusan.toUpperCase()
+                                  jurusan.toUpperCase()
                               );
                               return sum + (kelasInfo?.jumlah_siswa || 0);
                             },
@@ -614,9 +615,9 @@ export default function CreateTask() {
                                   const kelasInfo = availableKelas?.find(
                                     (k) =>
                                       k.kelas?.toUpperCase() ===
-                                        kelas.toUpperCase() &&
+                                      kelas.toUpperCase() &&
                                       k.jurusan?.toUpperCase() ===
-                                        jurusan.toUpperCase()
+                                      jurusan.toUpperCase()
                                   );
                                   const studentCount =
                                     kelasInfo?.jumlah_siswa || 0;
@@ -645,20 +646,18 @@ export default function CreateTask() {
                                         className="w-4 h-4 text-gray-900 rounded focus:ring-2 focus:ring-gray-900"
                                       />
                                       <span
-                                        className={`flex-1 font-medium ${
-                                          hasWarning
+                                        className={`flex-1 font-medium ${hasWarning
                                             ? "text-orange-600"
                                             : "text-gray-700"
-                                        }`}
+                                          }`}
                                       >
                                         {jurusan}
                                       </span>
                                       <span
-                                        className={`text-xs whitespace-nowrap ${
-                                          hasWarning
+                                        className={`text-xs whitespace-nowrap ${hasWarning
                                             ? "text-orange-500"
                                             : "text-gray-500"
-                                        }`}
+                                          }`}
                                       >
                                         ({studentCount})
                                       </span>
@@ -692,8 +691,8 @@ export default function CreateTask() {
                       {selectedStudents?.length ?? 0} dipilih
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mb-3">
-                    ℹ️ Anda dapat memilih lebih dari satu siswa dengan mencentang beberapa siswa sekaligus
+                  <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+                    <MdInfo className="w-4 h-4" /> Anda dapat memilih lebih dari satu siswa dengan mencentang beberapa siswa sekaligus
                   </p>
 
                   {(allSiswa?.length ?? 0) === 0 ? (
@@ -728,17 +727,17 @@ export default function CreateTask() {
                                 setSelectedStudents(ids);
                               }}
                               disabled={isLoading || filteredSiswa.length === 0}
-                              className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                              className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-1"
                             >
-                              ✅ Pilih Semua
+                              <MdCheck className="w-3 h-3" /> Pilih Semua
                             </button>
                             <button
                               type="button"
                               onClick={() => setSelectedStudents([])}
                               disabled={isLoading || selectedStudents.length === 0}
-                              className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                              className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-1"
                             >
-                              ❌ Batal Semua
+                              <MdClose className="w-3 h-3" /> Batal Semua
                             </button>
                           </div>
                         </div>
