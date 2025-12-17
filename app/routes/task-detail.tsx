@@ -21,9 +21,13 @@ import {
   MdTimer,
   MdAttachFile,
   MdAudiotrack,
+  MdAssignment,
   MdBarChart,
+  MdCancel,
   MdComment,
   MdDownload,
+  MdWarning,
+  MdSend,
 } from "react-icons/md";
 import { FaUserGraduate } from "react-icons/fa";
 import { ConfirmModal } from "../components/Modal";
@@ -355,7 +359,7 @@ export default function TaskDetail() {
                         </>
                       ) : (
                         <>
-                          <MdClose className="w-5 h-5 text-red-600 flex-shrink-0" />
+                          <MdCancel className="w-5 h-5 text-gray-500 flex-shrink-0" />
                           <span className="truncate">Tidak</span>
                         </>
                       )}
@@ -383,7 +387,7 @@ export default function TaskDetail() {
                         </>
                       ) : (
                         <>
-                          <MdClose className="w-5 h-5 text-red-600 flex-shrink-0" />
+                          <MdCancel className="w-5 h-5 text-gray-500 flex-shrink-0" />
                           <span className="truncate">Tidak</span>
                         </>
                       )}
@@ -600,9 +604,36 @@ export default function TaskDetail() {
           {isSiswa && task.penugasan && task.penugasan[0] && (
             <div className="bg-white rounded-2xl p-6 sm:p-8 mb-6 shadow-sm border border-gray-200">
               <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <MdCheckCircle className="text-3xl text-green-600" />
+                {task.penugasan[0].status === "selesai" ? (
+                  <MdCheckCircle className="text-3xl text-green-600" />
+                ) : task.penugasan[0].status === "ditolak" ? (
+                  <MdCancel className="text-3xl text-gray-900" />
+                ) : task.penugasan[0].status === "dikirim" ? (
+                  <MdSchedule className="text-3xl text-blue-600" />
+                ) : (
+                  <MdAssignment className="text-3xl text-gray-700" />
+                )}
                 Status Pengumpulan
               </h2>
+
+              {/* Rejection Alert - Prominent at Top */}
+              {task.penugasan[0].status === "ditolak" && (
+                <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex flex-col sm:flex-row gap-4 animate-fadeIn">
+                  <div className="p-3 bg-red-100 rounded-full flex-shrink-0 self-start sm:self-center text-gray-900">
+                    <MdCancel className="text-2xl" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-red-900 text-lg mb-1">
+                      Tugas Perlu Revisi
+                    </h3>
+                    <p className="text-red-700 text-sm leading-relaxed mb-3">
+                      Guru telah menolak pengumpulan tugas Anda. Silakan periksa
+                      catatan guru di bawah ini dan kumpulkan ulang tugas Anda
+                      segera.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Display submission status */}
               <div className="mb-6 bg-gray-50 rounded-xl p-5 space-y-4 border border-gray-200">
@@ -701,60 +732,65 @@ export default function TaskDetail() {
                 )}
               </div>
 
-              {/* Submit form - only show if not submitted yet */}
-              {task.penugasan[0].status === "pending" && (
-                <>
-                  {submitSuccess && (
-                    <Alert
-                      type="success"
-                      message="Tugas berhasil dikumpulkan! Mengalihkan..."
-                      className="mb-4"
-                    />
-                  )}
-
-                  {submitError && (
-                    <Alert
-                      type="error"
-                      message={submitError}
-                      onClose={() => setSubmitError("")}
-                      className="mb-4"
-                    />
-                  )}
-
-                  <form onSubmit={handleSubmitTask} className="space-y-4">
-                    {task.tipe_pengumpulan === "link" && (
-                      <Input
-                        label="Link Google Drive"
-                        type="url"
-                        placeholder="https://drive.google.com/file/d/..."
-                        value={linkDrive}
-                        onChange={(e) => setLinkDrive(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                        helperText="Tempelkan link Google Drive Anda di sini"
+              {/* Submit form - show if pending or rejected (for resubmission) */}
+              {(task.penugasan[0].status === "pending" ||
+                task.penugasan[0].status === "ditolak") && (
+                  <>
+                    {submitSuccess && (
+                      <Alert
+                        type="success"
+                        message="Tugas berhasil dikumpulkan! Mengalihkan..."
+                        className="mb-4"
                       />
                     )}
 
-                    <Button
-                      type="submit"
-                      isLoading={isSubmitting}
-                      className="w-full bg-gray-900 hover:bg-gray-800 shadow-sm flex items-center justify-center gap-2"
-                    >
-                      {task.tipe_pengumpulan === "link" ? (
-                        <>
-                          <MdLink className="w-5 h-5" />
-                          Kirim Tugas
-                        </>
-                      ) : (
-                        <>
-                          <MdCheckCircle className="w-5 h-5" />
-                          Konfirmasi Pengumpulan
-                        </>
+                    {submitError && (
+                      <Alert
+                        type="error"
+                        message={submitError}
+                        onClose={() => setSubmitError("")}
+                        className="mb-4"
+                      />
+                    )}
+
+                    <form onSubmit={handleSubmitTask} className="space-y-4">
+                      {task.tipe_pengumpulan === "link" && (
+                        <Input
+                          label="Link Google Drive"
+                          type="url"
+                          placeholder="https://drive.google.com/file/d/..."
+                          value={linkDrive}
+                          onChange={(e) => setLinkDrive(e.target.value)}
+                          required
+                          disabled={isSubmitting}
+                          helperText="Tempelkan link Google Drive Anda di sini"
+                        />
                       )}
-                    </Button>
-                  </form>
-                </>
-              )}
+
+                      <Button
+                        type="submit"
+                        isLoading={isSubmitting}
+                        className="w-full bg-gray-900 hover:bg-gray-800 shadow-sm flex items-center justify-center gap-2"
+                      >
+                        {task.tipe_pengumpulan === "link" ? (
+                          <>
+                            <MdLink className="w-5 h-5" />
+                            {task.penugasan[0].status === "ditolak"
+                              ? "Kirim Ulang"
+                              : "Kirim Tugas"}
+                          </>
+                        ) : (
+                          <>
+                            <MdSend className="w-5 h-5" />
+                            {task.penugasan[0].status === "ditolak"
+                              ? "Konfirmasi Pengumpulan Ulang"
+                              : "Konfirmasi Pengumpulan"}
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </>
+                )}
 
               {/* Message if already submitted */}
               {task.penugasan[0].status === "dikirim" && (
@@ -771,19 +807,6 @@ export default function TaskDetail() {
                 </div>
               )}
 
-              {task.penugasan[0].status === "ditolak" && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
-                  <MdClose className="text-3xl text-red-600 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-red-900 mb-1">
-                      Tugas Ditolak
-                    </p>
-                    <p className="text-sm text-red-700">
-                      Silakan periksa catatan guru dan kumpulkan ulang.
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -871,7 +894,7 @@ export default function TaskDetail() {
                             {penugasan.status === "selesai" ? (
                               <MdCheck className="w-4 h-4" />
                             ) : penugasan.status === "ditolak" ? (
-                              <MdClose className="w-4 h-4" />
+                              <MdCancel className="w-4 h-4 text-gray-900" />
                             ) : null}
                             {penugasan.status.charAt(0).toUpperCase() +
                               penugasan.status.slice(1)}
