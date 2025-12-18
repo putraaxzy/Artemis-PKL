@@ -68,17 +68,18 @@ PROMPT;
             $aiResponse = $result->text();
 
             return response()->json([
-                'success' => true,
+                'berhasil' => true,
                 'data' => [
                     'response' => $aiResponse,
                     'context' => $idTugas ? 'tugas' : 'general',
                 ],
+                'pesan' => 'Berhasil mendapatkan respon AI',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat memproses permintaan',
+                'berhasil' => false,
+                'pesan' => 'Terjadi kesalahan saat memproses permintaan',
                 'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }
