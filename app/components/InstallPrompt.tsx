@@ -54,7 +54,7 @@ export function InstallPrompt() {
           <img src="/logo.png" alt="artemis" className="h-12 w-12" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-gray-900 mb-1">install artemis</h3>
+          <h3 className="font-semibold text-gray-900 mb-1">Install Artemis</h3>
           <p className="text-sm text-gray-600 mb-3">
             install aplikasi untuk akses lebih cepat dan bisa digunakan offline
           </p>
