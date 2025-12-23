@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TugasController;
 use App\Http\Controllers\BotController;
-use App\Http\Controllers\GeminiController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -31,13 +29,13 @@ Route::prefix('bot')->group(function () {
     Route::middleware(['bot.key'])->group(function () {
         // ambil semua siswa yang perlu reminder (optimized untuk bot)
         Route::get('/siswa-pending', [BotController::class, 'ambilSiswaPerluReminder']);
-
+        
         // ambil siswa pending untuk tugas tertentu
         Route::get('/siswa-pending/{idTugas}', [BotController::class, 'ambilSiswaPendingByTugas']);
-
+        
         // catat reminder setelah bot berhasil kirim
         Route::post('/reminder', [BotController::class, 'catatReminder']);
-
+        
         // webhook untuk update status pengiriman (opsional)
         Route::post('/webhook/status', [BotController::class, 'webhookStatus']);
     });
@@ -45,7 +43,7 @@ Route::prefix('bot')->group(function () {
 
 // routes terproteksi
 Route::middleware(['jwt.auth'])->group(function () {
-
+    
     // routes autentikasi
     Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
@@ -84,10 +82,5 @@ Route::middleware(['jwt.auth'])->group(function () {
     // riwayat bot reminder (hanya guru)
     Route::prefix('bot')->middleware(['role:guru'])->group(function () {
         Route::get('/reminder/{idTugas}', [BotController::class, 'ambilReminder']);
-    });
-
-    // ai assistant (khusus siswa)
-    Route::prefix('ai')->middleware(['role:siswa'])->group(function () {
-        Route::post('/chat', [GeminiController::class, 'chat']);
     });
 });
