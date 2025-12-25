@@ -11,7 +11,7 @@ export default defineConfig({
     tsconfigPaths(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["logo.png"],
+      includeAssets: ["batik.png"],
       manifest: {
         name: "artemis - manajemen tugas",
         short_name: "artemis",
@@ -24,13 +24,13 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "/logo.png",
+            src: "/batik.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable",
           },
           {
-            src: "/logo.png",
+            src: "/batik.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",

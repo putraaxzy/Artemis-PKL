@@ -163,7 +163,7 @@ export default function Register() {
     <main className="flex items-center justify-center min-h-screen bg-white px-4 py-8">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
-          <img src="/logo.png" alt="App Logo" className="h-32" />
+          <img src="/batik.png" alt="App Logo" className="h-25" />
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg p-8 space-y-6">

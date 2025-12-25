@@ -51,7 +51,7 @@ export function InstallPrompt() {
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:w-96 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 animate-slide-up">
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0">
-          <img src="/logo.png" alt="artemis" className="h-12 w-12" />
+          <img src="/batik.png" alt="artemis" className="h-12 w-12" />
         </div>
         <div className="flex-1">
           <h3 className="font-semibold text-gray-900 mb-1">Install Artemis</h3>

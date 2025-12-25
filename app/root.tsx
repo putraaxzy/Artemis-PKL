@@ -60,7 +60,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           name="description"
           content="sistem manajemen tugas untuk siswa dan guru"
         />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/batik.png" />
         <Meta />
         <Links />
       </head>

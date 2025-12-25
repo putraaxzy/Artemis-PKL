@@ -45,7 +45,7 @@ export function Header() {
               className="flex items-center gap-2 group flex-shrink-0"
             >
               <img
-                src="/logo.png"
+                src="/batik.png"
                 alt="Artemis SMEA"
                 className="h-9 sm:h-10 w-auto object-contain transform group-hover:scale-105 transition-transform"
               />
