@@ -200,10 +200,11 @@ export function Header() {
       {/* Scroll to Top Button */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 p-3 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 transform z-40 ${showScrollTop
-          ? "translate-y-0 opacity-100"
-          : "translate-y-10 opacity-0 pointer-events-none"
-          }`}
+        className={`fixed bottom-6 right-6 p-3 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 transform z-40 ${
+          showScrollTop
+            ? "translate-y-0 opacity-100"
+            : "translate-y-10 opacity-0 pointer-events-none"
+        }`}
         aria-label="Scroll to top"
       >
         <MdArrowUpward className="w-6 h-6" />

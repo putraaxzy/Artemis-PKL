@@ -15,6 +15,7 @@ A modern, elegant, and lightweight task management system frontend built with Re
 ## 🎯 User Roles
 
 ### Guru (Teacher)
+
 - Create and manage tasks
 - View student submissions
 - Grade assignments
@@ -22,6 +23,7 @@ A modern, elegant, and lightweight task management system frontend built with Re
 - View submission statistics
 
 ### Siswa (Student)
+
 - View assigned tasks
 - Submit work (online or direct)
 - Track submission status
@@ -30,33 +32,39 @@ A modern, elegant, and lightweight task management system frontend built with Re
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone <repository-url>
 cd fe
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Setup environment variables
+
 ```bash
 cp .env.example .env.local
 ```
 
 4. Update `.env.local` with your API URL
+
 ```
 VITE_API_URL=http://localhost:8000/api
 ```
 
 5. Start development server
+
 ```bash
 npm run dev
 ```
@@ -66,10 +74,12 @@ The application will be available at `http://localhost:5173`
 ## 📖 Pages
 
 ### Authentication
+
 - **Login** (`/login`) - User authentication
 - **Register** (`/register`) - New user registration (students only)
 
 ### Tasks
+
 - **Tasks List** (`/tasks`) - View all tasks
 - **Task Detail** (`/tasks/:id`) - View task details and submit
 - **Create Task** (`/create-task`) - Create new task (guru only)
@@ -90,15 +100,18 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation
 ## 🎨 Design
 
 ### Color Scheme
+
 - **Primary**: Gray-900 (dark gray/black)
 - **Background**: White
 - **Accents**: Green (success), Red (error), Blue (info), Yellow (warning)
 
 ### Typography
+
 - Font: Inter (Google Fonts)
 - Clean, readable hierarchy
 
 ### Components
+
 - Minimal shadows and borders
 - Smooth transitions
 - Accessible focus states
@@ -117,7 +130,7 @@ The application uses JWT tokens for authentication:
 All API calls go through the centralized service layer (`app/services/api.ts`):
 
 ```typescript
-import { authService, taskService } from '../services/api';
+import { authService, taskService } from "../services/api";
 
 // Login
 const response = await authService.login({ username, password });
@@ -134,16 +147,19 @@ See [API Documentation](../be/API_DOCUMENTATION.md) for complete API reference.
 ## 🛠️ Development
 
 ### Build
+
 ```bash
 npm run build
 ```
 
 ### Type Check
+
 ```bash
 npm run typecheck
 ```
 
 ### Start Production Server
+
 ```bash
 npm start
 ```
@@ -169,16 +185,19 @@ npm start
 ## 🔧 Troubleshooting
 
 ### API Connection Issues
+
 - Check if backend is running on the correct port
 - Verify `VITE_API_URL` in `.env.local`
 - Check browser console for CORS errors
 
 ### Authentication Issues
+
 - Clear localStorage and try logging in again
 - Check if token is being saved correctly
 - Verify backend is returning valid JWT tokens
 
 ### Styling Issues
+
 - Ensure Tailwind CSS is properly configured
 - Clear browser cache
 - Rebuild the project

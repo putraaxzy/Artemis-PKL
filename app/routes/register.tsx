@@ -9,6 +9,7 @@ import {
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Alert } from "../components/Alert";
+import { useAuth } from "../hooks/useAuth";
 
 export function meta() {
   return [
@@ -18,6 +19,7 @@ export function meta() {
 }
 
 export default function Register() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     name: "",
@@ -33,6 +35,12 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingOptions, setIsLoadingOptions] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate("/tasks");
+    }
+  }, [authLoading, isAuthenticated, navigate]);
 
   // ambil opsi register saat komponen mount
   useEffect(() => {
@@ -53,6 +61,21 @@ export default function Register() {
 
     fetchOptions();
   }, []);
+
+  if (authLoading) {
+    return null;
+  }
+
+  if (isLoadingOptions) {
+    return (
+      <main className="flex items-center justify-center min-h-screen bg-white">
+        <div className="text-center">
+          <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin mb-4" />
+          <p className="text-gray-600">memuat...</p>
+        </div>
+      </main>
+    );
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -147,17 +170,6 @@ export default function Register() {
       setIsLoading(false);
     }
   };
-
-  if (isLoadingOptions) {
-    return (
-      <main className="flex items-center justify-center min-h-screen bg-white">
-        <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin mb-4" />
-          <p className="text-gray-600">memuat...</p>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-white px-4 py-8">

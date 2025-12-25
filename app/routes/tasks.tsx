@@ -3,7 +3,14 @@ import { useNavigate } from "react-router";
 import { taskService, type Task } from "../services";
 import { useAuth } from "../hooks";
 import { Header, Card, Alert, Button } from "../components";
-import { MdTask, MdLink, MdFilePresent, MdEdit, MdDelete, MdWarning } from "react-icons/md";
+import {
+  MdTask,
+  MdLink,
+  MdFilePresent,
+  MdEdit,
+  MdDelete,
+  MdWarning,
+} from "react-icons/md";
 
 export function meta() {
   return [
@@ -249,7 +256,7 @@ export default function Tasks() {
 
                     {/* Date */}
                     <p className="text-xs text-gray-500 pt-2 border-t border-gray-200">
-                      Dibuat Pada: {" "}
+                      Dibuat Pada:{" "}
                       {new Date(task.dibuat_pada).toLocaleDateString("id-ID", {
                         year: "numeric",
                         month: "short",

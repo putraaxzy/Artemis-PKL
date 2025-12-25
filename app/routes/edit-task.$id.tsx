@@ -285,11 +285,10 @@ export default function EditTask() {
       const normalizedIdTarget =
         formData.target === "kelas"
           ? selectedClasses.map((c) => ({
-            kelas: c.kelas.toUpperCase().trim(),
-            jurusan: c.jurusan.toUpperCase().trim(),
-          }))
+              kelas: c.kelas.toUpperCase().trim(),
+              jurusan: c.jurusan.toUpperCase().trim(),
+            }))
           : selectedStudents;
-
 
       const payload = new FormData();
 
@@ -305,7 +304,10 @@ export default function EditTask() {
       if (formData.tanggal_mulai) {
         const startDate = new Date(formData.tanggal_mulai);
         startDate.setHours(0, 0, 0, 0);
-        const startDateStr = startDate.toISOString().slice(0, 19).replace("T", " ");
+        const startDateStr = startDate
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " ");
         payload.append("tanggal_mulai", startDateStr);
       }
 
@@ -579,9 +581,9 @@ export default function EditTask() {
                               const kelasInfo = availableKelas?.find(
                                 (k) =>
                                   k.kelas?.toUpperCase() ===
-                                  kelas.toUpperCase() &&
+                                    kelas.toUpperCase() &&
                                   k.jurusan?.toUpperCase() ===
-                                  jurusan.toUpperCase()
+                                    jurusan.toUpperCase()
                               );
                               return sum + (kelasInfo?.jumlah_siswa || 0);
                             },
@@ -603,9 +605,9 @@ export default function EditTask() {
                                   const kelasInfo = availableKelas?.find(
                                     (k) =>
                                       k.kelas?.toUpperCase() ===
-                                      kelas.toUpperCase() &&
+                                        kelas.toUpperCase() &&
                                       k.jurusan?.toUpperCase() ===
-                                      jurusan.toUpperCase()
+                                        jurusan.toUpperCase()
                                   );
                                   const studentCount =
                                     kelasInfo?.jumlah_siswa || 0;
@@ -657,7 +659,8 @@ export default function EditTask() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
-                    <MdInfo className="w-4 h-4" /> Anda dapat memilih lebih dari satu siswa dengan mencentang beberapa siswa sekaligus
+                    <MdInfo className="w-4 h-4" /> Anda dapat memilih lebih dari
+                    satu siswa dengan mencentang beberapa siswa sekaligus
                   </p>
 
                   {(allSiswa?.length ?? 0) === 0 ? (
@@ -699,7 +702,9 @@ export default function EditTask() {
                             <button
                               type="button"
                               onClick={() => setSelectedStudents([])}
-                              disabled={isLoading || selectedStudents.length === 0}
+                              disabled={
+                                isLoading || selectedStudents.length === 0
+                              }
                               className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-1"
                             >
                               <MdClose className="w-3 h-3" /> Batal Semua

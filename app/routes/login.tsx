@@ -4,6 +4,7 @@ import { authService, tokenService, userService } from "../services/api";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Alert } from "../components/Alert";
+import { useAuth } from "../hooks/useAuth";
 
 export function meta() {
   return [
@@ -13,6 +14,7 @@ export function meta() {
 }
 
 export default function Login() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -53,6 +55,16 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate("/tasks");
+    }
+  }, [authLoading, isAuthenticated, navigate]);
+
+  if (authLoading) {
+    return null;
+  }
+
   return (
     <main className="flex items-center justify-center min-h-screen bg-white px-4">
       <div className="w-full max-w-md">
@@ -62,7 +74,9 @@ export default function Login() {
 
         <div className="bg-white border border-gray-200 rounded-lg p-8 space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Selamat Datang!</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Selamat Datang!
+            </h1>
             <p className="text-gray-600 text-sm mt-1">
               masuk ke akun anda untuk melanjutkan
             </p>
