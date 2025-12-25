@@ -40,7 +40,7 @@ export default function Login() {
       if (response.berhasil) {
         tokenService.setToken(response.data.token);
         userService.setUser(response.data.pengguna);
-        window.location.href = "/tasks";
+        window.location.href = "/dashboard";
       } else {
         setError(response.pesan || "login gagal");
       }
@@ -57,7 +57,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
-      navigate("/tasks");
+      navigate("/dashboard");
     }
   }, [authLoading, isAuthenticated, navigate]);
 

@@ -185,7 +185,7 @@ export default function Tasks() {
                 >
                   <div
                     className="p-6 space-y-4 cursor-pointer flex-1"
-                    onClick={() => navigate(`/tasks/${task.id}`)}
+                    onClick={() => navigate(`/dashboard/${task.id}`)}
                   >
                     {/* Title */}
                     <h3 className="text-lg font-bold text-gray-900 line-clamp-2">

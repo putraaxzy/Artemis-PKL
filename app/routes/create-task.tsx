@@ -59,7 +59,7 @@ export default function CreateTask() {
     }
 
     if (!isAuthenticated || !isGuru) {
-      navigate("/tasks");
+      navigate("/dashboard");
       return;
     }
 
@@ -333,7 +333,7 @@ export default function CreateTask() {
       const response = await taskService.createTask(payload);
 
       if (response.berhasil) {
-        navigate("/tasks");
+        navigate("/dashboard");
       } else {
         setError(response.pesan || "Gagal membuat tugas");
       }
@@ -398,7 +398,7 @@ export default function CreateTask() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* tombol kembali */}
           <Button
-            onClick={() => navigate("/tasks")}
+            onClick={() => navigate("/dashboard")}
             variant="ghost"
             size="sm"
             className="mb-6"
@@ -892,7 +892,7 @@ export default function CreateTask() {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => navigate("/tasks")}
+                  onClick={() => navigate("/dashboard")}
                   disabled={isLoading}
                   className="flex-1"
                 >

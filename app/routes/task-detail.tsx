@@ -141,7 +141,7 @@ export default function TaskDetail() {
         // Refresh task detail to show updated status
         await fetchTaskDetail();
         setTimeout(() => {
-          navigate("/tasks");
+          navigate("/dashboard");
         }, 2000);
       } else {
         setSubmitError(response.pesan || "Gagal mengumpulkan tugas");
@@ -257,10 +257,10 @@ export default function TaskDetail() {
             <Alert
               type="error"
               message={error || "Tugas tidak ditemukan"}
-              onClose={() => navigate("/tasks")}
+              onClose={() => navigate("/dashboard")}
             />
             <Button
-              onClick={() => navigate("/tasks")}
+              onClick={() => navigate("/dashboard")}
               className="mt-4"
               variant="secondary"
             >
@@ -288,7 +288,7 @@ export default function TaskDetail() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Back Button */}
           <Button
-            onClick={() => navigate("/tasks")}
+            onClick={() => navigate("/dashboard")}
             variant="ghost"
             size="sm"
             className="mb-6 hover:bg-gray-100"

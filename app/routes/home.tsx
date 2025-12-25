@@ -14,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     if (tokenService.hasToken()) {
-      navigate("/tasks");
+      navigate("/dashboard");
     } else {
       navigate("/login");
     }

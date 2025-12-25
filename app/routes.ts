@@ -4,8 +4,8 @@ export default [
   index("routes/home.tsx"),
   route("login", "routes/login.tsx"),
   route("register", "routes/register.tsx"),
-  route("tasks", "routes/tasks.tsx"),
-  route("tasks/:id", "routes/task-detail.tsx"),
+  route("dashboard", "routes/tasks.tsx"),
+  route("dashboard/:id", "routes/task-detail.tsx"),
   route("create-task", "routes/create-task.tsx"),
   route("edit-task/:id", "routes/edit-task.$id.tsx"),
 ] satisfies RouteConfig;
