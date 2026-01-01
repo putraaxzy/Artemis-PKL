@@ -312,6 +312,21 @@ export default function TaskDetail() {
                   })}
                 </p>
               </div>
+              {isGuru && (
+                <div className="flex gap-2 flex-shrink-0">
+                  <Button
+                    onClick={() => {
+                      const token = localStorage.getItem("token");
+                      window.open(`/api/tugas/${id}/export`, "_blank");
+                    }}
+                    className="flex items-center gap-2 whitespace-nowrap"
+                    variant="secondary"
+                  >
+                    <MdDownload className="w-5 h-5" />
+                    Export Excel
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Task Info Grid - Compact */}
