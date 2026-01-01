@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Tugas;
 use App\Models\Penugasaan;
 use App\Models\User;
+use App\Exports\TugasExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TugasController extends Controller
 {
@@ -956,5 +958,38 @@ class TugasController extends Controller
             'pesan' => 'Tugas berhasil dihapus'
         ]);
     }
+
+    /**
+     * export tugas ke excel (hanya guru)
+     */
+    public function exportTugas($id)
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'guru') {
+            return response()->json([
+                'berhasil' => false,
+                'pesan' => 'Hanya guru yang dapat export tugas'
+            ], 403);
+        }
+
+        $tugas = Tugas::where('id', $id)
+            ->where('id_guru', $user->id)
+            ->first();
+
+        if (!$tugas) {
+            return response()->json([
+                'berhasil' => false,
+                'pesan' => 'Tugas tidak ditemukan'
+            ], 404);
+        }
+
+        // sanitize judul untuk nama file
+        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', $tugas->judul);
+        $filename = substr($filename, 0, 50) . '_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+        return Excel::download(new TugasExport($id, $user->id), $filename);
+    }
 }
+
 

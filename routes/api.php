@@ -67,6 +67,7 @@ Route::middleware(['jwt.auth'])->group(function () {
             Route::get('/{id}/pending', [TugasController::class, 'ambilPenugasanPending']);
             Route::put('/penugasan/{id}/status', [TugasController::class, 'updateStatusPenugasan']);
             Route::post('/{id}/reminder', [BotController::class, 'kirimReminder']);
+            Route::get('/{id}/export', [TugasController::class, 'exportTugas']);
         });
 
         // hanya siswa
