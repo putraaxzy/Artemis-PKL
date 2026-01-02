@@ -402,6 +402,30 @@ export const taskService = {
       method: "POST",
     });
   },
+
+  /**
+   * Export task to Excel (guru only)
+   */
+  async exportTask(taskId: number): Promise<Blob> {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+    const response = await fetch(
+      `${API_BASE_URL}/tugas/${taskId}/export`,
+      {
+        method: "GET",
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Export failed: ${response.statusText}`);
+    }
+
+    return response.blob();
+  },
 };
 
 // ============================================================================

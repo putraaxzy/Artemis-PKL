@@ -298,13 +298,13 @@ export default function TaskDetail() {
 
           {/* Task Header - Modern Card */}
           <div className="bg-white rounded-2xl p-6 sm:p-8 mb-6 shadow-sm border border-gray-200">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div className="flex-1 min-w-0">
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 leading-tight break-words">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight break-words">
                   {task.judul}
                 </h1>
-                <p className="text-sm text-gray-600 flex items-center gap-2">
-                  <MdCalendarToday className="w-5 h-5" />
+                <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-2">
+                  <MdCalendarToday className="w-4 sm:w-5 h-4 sm:h-5" />
                   {new Date(task.dibuat_pada).toLocaleDateString("id-ID", {
                     year: "numeric",
                     month: "long",
@@ -313,19 +313,34 @@ export default function TaskDetail() {
                 </p>
               </div>
               {isGuru && (
-                <div className="flex gap-2 flex-shrink-0">
-                  <Button
-                    onClick={() => {
-                      const token = localStorage.getItem("token");
-                      window.open(`/api/tugas/${id}/export`, "_blank");
-                    }}
-                    className="flex items-center gap-2 whitespace-nowrap"
-                    variant="secondary"
-                  >
-                    <MdDownload className="w-5 h-5" />
-                    Export Excel
-                  </Button>
-                </div>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const blob = await taskService.exportTask(parseInt(id!));
+                      
+                      // Create download link
+                      const url = window.URL.createObjectURL(blob);
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.download = `${task?.judul}_${new Date().toISOString().split('T')[0]}.xlsx`;
+                      
+                      // Trigger download
+                      document.body.appendChild(link);
+                      link.click();
+                      
+                      // Cleanup
+                      document.body.removeChild(link);
+                      window.URL.revokeObjectURL(url);
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "Gagal export Excel");
+                    }
+                  }}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 whitespace-nowrap"
+                  variant="secondary"
+                >
+                  <MdDownload className="w-4 sm:w-5 h-4 sm:h-5" />
+                  <span className="text-sm sm:text-base">Export Excel</span>
+                </Button>
               )}
             </div>
 
